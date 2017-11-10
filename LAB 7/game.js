@@ -1,7 +1,7 @@
 var actorChars = {
 '@': Player,
 'o': Coin,
-'d': Jewel
+'d': Mario
 };
 function Level(plan) {
     this.width = plan[0].length;
@@ -9,6 +9,7 @@ function Level(plan) {
     this.height = plan.length;
   
     this.grid = [];
+	
     this.actors = [];
   
     for (var y = 0; y < this.height; y++) {
@@ -26,7 +27,7 @@ function Level(plan) {
             fieldType = "wall";
           else if (ch == "!")
            fieldType = "lava";
-           else if (ch == "y")
+          else if (ch == "y")
            fieldType = "floater";
    
          gridLine.push(fieldType);
@@ -38,7 +39,7 @@ function Level(plan) {
      })[0];
    }
 
-   function Jewel(pos) {
+   function Mario(pos) {
     this.basePos = this.pos = pos.plus(new Vector(0.2,0.1))
     this.size = new Vector(0.6,0.6);
     this.wobble = Math.random() * Math.PI * 2;
@@ -51,7 +52,7 @@ function Level(plan) {
        this.wobble = Math.random() * Math.PI * 2;
 
    }
-   Jewel.prototype.type = 'jewel'
+   Mario.prototype.type = 'mario'
    Coin.prototype.type = 'coin';
    Player.prototype.type = 'player';
 
@@ -74,6 +75,7 @@ function Level(plan) {
      this.size = new Vector(0.8, 1.5);
      this.speed = new Vector(0, 0);
    }
+   
    Player.prototype.type = "player";
    
     function elt(name, className) {
@@ -189,7 +191,6 @@ function Level(plan) {
             this.actors.forEach(function(actor) {
               actor.act(thisStep, this, keys);
             }, this);
-           
 
          step -= thisStep;
        }
@@ -202,7 +203,7 @@ function Level(plan) {
        this.pos = this.basePos.plus(new Vector(0, wobblePos));
      };
 
-     Jewel.prototype.act = function(step) {
+     Mario.prototype.act = function(step) {
        this.wobble += step * wobbleSpeed;
        var wobblePos = Math.sin(this.wobble) * wobbleDist;
        this.pos = this.basePos.plus(new Vector(0, wobblePos));
@@ -256,7 +257,6 @@ function Level(plan) {
             var otherActor = level.actorAt(this);
             if (otherActor)
               level.playerTouched(otherActor.type, otherActor);
-
            
           };
           
@@ -265,21 +265,18 @@ function Level(plan) {
                   this.actors = this.actors.filter(function(other) {
                     return other != actor; 
               });
-          } else if (type == 'jewel') {
+          } else if (type == 'mario') {
                       this.actors = this.actors.filter(function(other){
                         return other != actor;
                       });
           }
         };
           
-          
           var arrowCodes = {37: "left", 38: "up", 39: "right", 40: "down"};
           
-         
          function trackKeys(codes) {
            var pressed = Object.create(null);
-         
-         
+                  
            function handler(event) {
              if (codes.hasOwnProperty(event.keyCode)) {
                var down = event.type == "keydown";
